@@ -11,14 +11,18 @@ _Use Express and Sequelize to build a social network for students. This network,
 ### Messages should:
 - _be associated with a user who wrote them_
 - _have up to 140 characters of text_
-- _**Shout** mode visible to all users_
-- _**Note** mode visible to selected users_
+- _**Gob** mode send message visible to select users_
+- _**Gabble** mode send message visible to all users_
+- _editable by creator (adds a edit flag)_
+- _destroyable by creator_
 
 ### Likes should:
 - _be associated with a user who made the like and a message that was liked_
-- _The application should have ways to do the following:_
+- _removeable by author_
 
-### Sign up as a new user
+
+### The application should have ways to do the following:
+- _Sign up as a new user_
 - _Log in_
 - _Log out_
 - _View all messages with the newest first_
