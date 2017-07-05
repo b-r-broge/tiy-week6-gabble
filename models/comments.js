@@ -1,46 +1,41 @@
 'use strict';
 module.exports = function(sequelize, DataTypes) {
   var comments = sequelize.define('comments', {
-    id: {
-      type: Sequelize.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
-    },
     content: {
-      type: Sequelize.STRING(140),
+      type: DataTypes.STRING(140),
       allowNull: false
     },
     posted_at: {
-      type: Sequelize.DATE,
-      default: Sequelize.NOW
+      type: DataTypes.DATE,
+      default: DataTypes.NOW
     },
     author_id: {
-      type: Sequelize.INTEGER,
+      type: DataTypes.INTEGER,
       references: {
         model: 'users',
         key: 'id',
-        deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE,
+        deferrable: sequelize.Deferrable.INITIALLY_IMMEDIATE,
         onDelete: 'cascade',
         onUpdate: 'cascade'
       }
     },
     post_id: {
-      type: Sequelize.INTEGER,
+      type: DataTypes.INTEGER,
       references: {
         model: 'posts',
         key: 'id',
-        deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE,
+        deferrable: sequelize.Deferrable.INITIALLY_IMMEDIATE,
         onDelete: 'cascade',
         onUpdate: 'cascade'
       }
     },
     createdAt: {
       allowNull: false,
-      type: Sequelize.DATE
+      type: DataTypes.DATE
     },
     updatedAt: {
       allowNull: false,
-      type: Sequelize.DATE
+      type: DataTypes.DATE
     }
   }, {
     classMethods: {

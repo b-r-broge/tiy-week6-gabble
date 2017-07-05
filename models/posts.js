@@ -2,49 +2,49 @@
 module.exports = function(sequelize, DataTypes) {
   var posts = sequelize.define('posts', {
     id: {
-      type: Sequelize.INTEGER,
+      type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
     },
     content: {
-      type: Sequelize.STRING(140),
+      type: DataTypes.STRING(140),
       allowNull: false
     },
     edit: {
-      type: Sequelize.BOOLEAN,
+      type: DataTypes.BOOLEAN,
       default: false
     },
     posted_at: {
-      type: Sequelize.DATE,
-      default: Sequelize.NOW
+      type: DataTypes.DATE,
+      default: DataTypes.NOW
     },
     author_id: {
-      type: Sequelize.INTEGER,
+      type: DataTypes.INTEGER,
       references: {
         model: 'users',
         key: 'id',
-        deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE,
+        deferrable: sequelize.Deferrable.INITIALLY_IMMEDIATE,
         onDelete: 'cascade',
         onUpdate: 'cascade'
       }
     },
     group_id: {
-      type: Sequelize.INTEGER,
+      type: DataTypes.INTEGER,
       references: {
         model: 'groups',
         key: 'id',
-        deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE,
+        deferrable: sequelize.Deferrable.INITIALLY_IMMEDIATE,
         onDelete: 'cascade',
         onUpdate: 'cascade'
       }
     },
     createdAt: {
       allowNull: false,
-      type: Sequelize.DATE
+      type: DataTypes.DATE
     },
     updatedAt: {
       allowNull: false,
-      type: Sequelize.DATE
+      type: DataTypes.DATE
     }
   }, {
     classMethods: {

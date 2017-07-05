@@ -1,13 +1,13 @@
 'use strict';
 module.exports = function(Sequelize, DataTypes) {
-  var usr-groups = Sequelize.define('usr-groups', {
+  var usr_groups = Sequelize.define('usr-groups', {
     id: {
-      type: Sequelize.INTEGER,
+      type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
     },
     author_id: {
-      type: Sequelize.INTEGER,
+      type: DataTypes.INTEGER,
       references: {
         model: 'users',
         key: 'id',
@@ -17,7 +17,7 @@ module.exports = function(Sequelize, DataTypes) {
       }
     },
     group_id: {
-      type: Sequelize.INTEGER,
+      type: DataTypes.INTEGER,
       references: {
         model: 'groups',
         key: 'id',
@@ -28,18 +28,18 @@ module.exports = function(Sequelize, DataTypes) {
     },
     createdAt: {
       allowNull: false,
-      type: Sequelize.DATE
+      type: DataTypes.DATE
     },
     updatedAt: {
       allowNull: false,
-      type: Sequelize.DATE
+      type: DataTypes.DATE
     }
   }, {
     classMethods: {
       associate: function(models) {
         // more associations
-        usr-groups.belongsTo(models.users);
-        usr-groups.belongsTo(models.groups);
+        usr_groups.belongsTo(models.users);
+        usr_groups.belongsTo(models.groups);
       }
     }
   })
