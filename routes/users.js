@@ -1,6 +1,9 @@
 // Perform user authentication, if not valid, kick user back to pub files and
 // ask for login.
 
+// lots of passport assistance from docs and from
+// https://github.com/lyndachiwetelu/using-passport-with-sequelize-and-mysql
+
 'use strict'
 
 const express = require('express');
@@ -8,48 +11,103 @@ const router = express.Router();
 
 const passport = require('passport');
 const Strategy = require('passport-local').Strategy;
-const models = require('../models');
 
-const usersDb = models.user;
+const models = require('../models');
+const usersDb = models.users;
+
+const bCrypt = require('bcrypt-nodejs')
+
+const genHash = function(password) {
+  return bCrypt.hashSync(password, bCrypt.genSaltSync(8), null)
+}
+
+
+router.use(passport.initialize());
+router.use(passport.session());
 
 // authentication stuffs
-passport.use(new Strategy ({
+
+passport.serializeUser(function(user, next) {
+  next(null, user.id);
+});
+
+passport.deserializeUser(function(id, next) {
+  usersDb.findById(id).then(function (user) {
+    if (user) {
+      next(null, user.get());
+    } else {
+      next(user.errors, null);
+    }
+  });
+});
+
+// Specifically for signing up a new user
+passport.use('local-signup', new Strategy ({
     usernameField: 'username',
-    passwordField: 'password'},
-  function (username, password, done) {
+    passwordField: 'password',
+    passReqToCallback: true
+  },
+  function (req, username, password, next) {
     console.log('setting up new login strategy');
     usersDb.findOne({
       where: {
         username: username
     }}).then(function(data) {
-      console.log('user in db, checking pw')
-      console.log('data:', data);
-      if (data.dataValues.password === password) {
-        console.log('valid user/password')
-        console.log('setting session data');
-        req.session.user = data;
-        return next(null, data)
+      if (data) {
+        return next(null, false, {message: "Email already used"});
+      } else {
+        var userPass = genHash(password);
+
+        let newUser = usersDb.build({
+          fullname: req.body.fullname,
+          email: req.body.email,
+          username: username,
+          password: userPass,
+          picture: req.body.picture
+        })
+        newUser.save().then(function(newUsr, created) {
+          if (!newUsr) {
+            return next(null, false);
+          }
+          if (newUsr) {
+            return next(null, newUser);
+          }
+        });
       }
-      return next(null, false);
-    }).catch(function(err) {
-      return next(err);
     })
   }
 ));
 
-// passport.serializeUser(function(user, cb) {
-//   cb(null, user.id);
-// });
-//
-// passport.deserializeUser(function(id, cb) {
-//   db.users.findById(id, function (err, user) {
-//     if (err) { return cb(err); }
-//     cb(null, user);
-//   });
-// });
+// Passport for signing in an existing user
+passport.use('local-signin', new Strategy ({
+    usernameField: 'username',
+    passwordField: 'password',
+  },
+  function(username, password, next) {
+    let isValid = (usrPass, pass) => {
+      return bCrypt.compareSync(pass, usrPass);
+    }
+    usersDb.findOne({
+      where: {
+        username: username
+      }}).then(function(data) {
+        if (!data) {
+          return next(null, false, {message: 'username does not exist'});
+        }
+        console.log(data);
 
-router.use(passport.initialize());
-router.use(passport.session());
+        if (!isValid(data.password, password)) {
+          return next(null, false, {message: 'password is not correct'});
+        }
+
+        var usrInfo = data.get();
+        return next(null, usrInfo);
+      }).catch(function(err) {
+        console.log('Error:', err);
+        return next(null, false, {message: 'Error on signon'});
+      });
+  }
+));
 
 router.get('/gobble/home/:username', function (req, res) {
   // get home page for a user
@@ -57,6 +115,18 @@ router.get('/gobble/home/:username', function (req, res) {
   // need to handle personal page separate from another users
 
 });
+
+router.get('/gobble/signup', function (req, res) {
+  console.log('signup page');
+  res.render('signup')
+});
+
+router.post('/gobble/signup',
+  passport.authenticate('local-signup', {
+    failureRedirect: '/gobble/signup',
+    successRedirect: '/gobble/login'
+  })
+);
 
 router.get('/gobble/login', function (req, res) {
   // perform login and check
@@ -68,15 +138,13 @@ router.get('/gobble/home', function (req, res) {
   console.log('home page');
   console.log(req.session);
   res.render('home', {user: req.session.user});
-})
-
-router.post('/gobble/login', function (req, res) {
-  console.log('attempting login', req.body);
-  passport.authenticate('local', {
-    failureRedirect: '/gobble/login',
-    successRedirect: '/gobble/home',
-    failureFlash: true
-  });
 });
+
+router.post('/gobble/login',
+  passport.authenticate('local-signin', {
+    failureRedirect: '/gobble/login',
+    successRedirect: '/gobble/home'
+  })
+);
 
 module.exports = router;
