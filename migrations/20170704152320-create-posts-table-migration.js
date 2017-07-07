@@ -16,11 +16,11 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         default: false
       },
-      posted_at: {
+      postedAt: {
         type: Sequelize.DATE,
         default: Sequelize.NOW
       },
-      author_id: {
+      authorId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'users',
@@ -30,7 +30,7 @@ module.exports = {
           onUpdate: 'cascade'
         }
       },
-      group_id: {
+      groupId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'groups',

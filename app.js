@@ -8,7 +8,7 @@ const session = require('express-session');
 
 const pubRoutes = require('./routes/pub');
 const userRoutes = require('./routes/users');
-// const createRoutes = require('./routes/create');
+const createRoutes = require('./routes/create');
 // const readRoutes = require('./routes/read');
 // const updateRoutes = require('./routes/update');
 // const deleteRoutes = require('./routes/delete');
@@ -32,7 +32,7 @@ app.use(session({
 
 app.use(pubRoutes);
 app.use(userRoutes);
-// app.use(createRoutes);
+app.use(createRoutes);
 // app.use(readRoutes);
 // app.use(updateRoutes);
 // app.use(deleteRoutes);

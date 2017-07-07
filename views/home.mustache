@@ -5,8 +5,53 @@
     <title>Gobble Gobble</title>
   </head>
   <body>
-    <h1>welcome to Gobble</h1>
-    {{user}}
-    <a href="/gobble/login">Log In Here!</a>
+    <header>
+      <h1>Gobble network</h1>
+      <div class="nav">
+        <a href="/gobble/login"><button type="button" name="button">Log In</button></a>
+        <a href="/gobble/signup"><button type="button" name="signup">Sign Up Here!</button></a>
+        <form class="" action="/gobble/logout" method="post">
+          <button type="submit" name="logout">Log Out</button>
+        </form>
+      </div>
+    </header>
+
+    <aside class="user-info">
+<!--  Some Mustache shenanigans here  -->
+    </aside>
+    <article class="main-content">
+      <form class="" action="/gobble/newPost" method="post">
+        <textarea name="content" rows="3" cols="60" maxlength="140"></textarea>
+        <button type="submit" name="button">GOBBLE</button>
+      </form>
+      <h3>public posts</h3>
+      {{#publicPosts}}
+        <div class="pub-card">
+          <div class="ident">
+            <p>{{users.username}}</p>
+            {{#canEdit}}
+              <button type="button" name="button">Edit</button>
+               <button type="button" name="button">delete</button>
+            {{/canEdit}}
+          </div>
+          <div class="content">
+            <p>{{content}}</p>
+          </div>
+          <form class="" action="/gobble/likePost" method="post">
+            <button type="submit" name="doLike" value="{{users.id}}">+1</button>
+          </form>
+        </div>
+      {{/publicPosts}}
+    </article>
+
+    <footer>
+      <div class="nav">
+        <a href="/gobble/login"><button type="button" name="button">Log In</button></a>
+        <a href="/gobble/signup"><button type="button" name="signup">Sign Up Here!</button></a>
+        <form class="" action="/gobble/logout" method="post">
+          <button type="submit" name="logout">Log Out</button>
+        </form>
+      </div>
+    </footer>
   </body>
 </html>

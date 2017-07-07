@@ -10,26 +10,6 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.BOOLEAN,
       default: false
     },
-    author_id: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'users',
-        key: 'id',
-        deferrable: sequelize.Deferrable.INITIALLY_IMMEDIATE,
-        onDelete: 'cascade',
-        onUpdate: 'cascade'
-      }
-    },
-    post_id: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'posts',
-        key: 'id',
-        deferrable: sequelize.Deferrable.INITIALLY_IMMEDIATE,
-        onDelete: 'cascade',
-        onUpdate: 'cascade'
-      }
-    },
     createdAt: {
       allowNull: false,
       type: DataTypes.DATE
@@ -38,13 +18,12 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       type: DataTypes.DATE
     }
-  }, {
-    classMethods: {
-      associate: function(models) {
-        likes.belongsTo(models.users);
-        likes.belongsTo(models.posts);
-      }
-    }
-  })
+  }, {});
+
+  likes.associate = function(models) {
+    this.belongsTo(models.users, {foreignKey: 'authorId', foreignKeyConstraint: true, onDelete: 'cascade', onUpdate: 'cascade', as: 'users'});
+    this.belongsTo(models.posts, {foreignKey: 'postId', foreignKeyConstraint: true, onDelete: 'cascade', onUpdate: 'cascade', as: 'posts'});
+  }
+
   return likes
 }

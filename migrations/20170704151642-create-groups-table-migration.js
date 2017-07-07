@@ -12,7 +12,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      author_id: {
+      authorId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'users',

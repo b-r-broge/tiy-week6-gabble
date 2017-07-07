@@ -2,13 +2,13 @@
 
 module.exports = {
   up: function (queryInterface, Sequelize) {
-    return queryInterface.createTable('usr-groups', {
+    return queryInterface.createTable('usrGroups', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true
       },
-      author_id: {
+      authorId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'users',
@@ -18,7 +18,7 @@ module.exports = {
           onUpdate: 'cascade'
         }
       },
-      group_id: {
+      groupId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'groups',
@@ -40,6 +40,6 @@ module.exports = {
   },
 
   down: function (queryInterface, Sequelize) {
-    return queryInterface.dropTable('usr-groups');
+    return queryInterface.dropTable('usrGroups');
   }
 };

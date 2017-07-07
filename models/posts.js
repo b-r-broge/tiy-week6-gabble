@@ -1,5 +1,6 @@
 'use strict';
 module.exports = function(sequelize, DataTypes) {
+  // var users = require('./users')(sequelize, DataTypes);
   var posts = sequelize.define('posts', {
     id: {
       type: DataTypes.INTEGER,
@@ -14,29 +15,9 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.BOOLEAN,
       default: false
     },
-    posted_at: {
+    postedAt: {
       type: DataTypes.DATE,
       default: DataTypes.NOW
-    },
-    author_id: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'users',
-        key: 'id',
-        deferrable: sequelize.Deferrable.INITIALLY_IMMEDIATE,
-        onDelete: 'cascade',
-        onUpdate: 'cascade'
-      }
-    },
-    group_id: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'groups',
-        key: 'id',
-        deferrable: sequelize.Deferrable.INITIALLY_IMMEDIATE,
-        onDelete: 'cascade',
-        onUpdate: 'cascade'
-      }
     },
     createdAt: {
       allowNull: false,
@@ -46,15 +27,14 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       type: DataTypes.DATE
     }
-  }, {
-    classMethods: {
-      associate: function(models) {
-        posts.belongsTo(models.users);
-        posts.belongsTo(models.groups);
-        posts.hasMany(models.comments);
-        posts.hasMany(models.likes);
-      }
-    }
-  })
-  return posts
+  }, {});
+
+posts.associate = function(models) {
+  this.belongsTo(models.users, {foreignKey: 'authorId', foreignKeyConstraint: true, onDelete: 'cascade', onUpdate: 'cascade', as: 'users'});
+  this.belongsTo(models.groups, {foreignKey: 'groupId', foreignKeyConstraint: true, onDelete: 'cascade', onUpdate: 'cascade', as: 'groups'});
+  this.hasMany(models.comments);
+  this.hasMany(models.likes, {as: 'likes', foreignKey: 'postId'});
+};
+
+return posts;
 }

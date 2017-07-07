@@ -12,11 +12,11 @@ module.exports = {
         type: Sequelize.STRING(140),
         allowNull: false
       },
-      posted_at: {
+      postedAt: {
         type: Sequelize.DATE,
         default: Sequelize.NOW
       },
-      author_id: {
+      authorId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'users',
@@ -26,7 +26,7 @@ module.exports = {
           onUpdate: 'cascade'
         }
       },
-      post_id: {
+      postId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'posts',

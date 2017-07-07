@@ -1,11 +1,13 @@
 'use strict';
+
 module.exports = function(Sequelize, DataTypes) {
+  // var posts = require('./posts')(Sequelize, DataTypes)
   var users = Sequelize.define('users', {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
-    },
+    // id: {
+    //   type: DataTypes.INTEGER,
+    //   primaryKey: true,
+    //   autoIncrement: true
+    // },
     fullname: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -36,17 +38,16 @@ module.exports = function(Sequelize, DataTypes) {
       allowNull: false,
       type: DataTypes.DATE
     }
-  }, {
-    classMethods: {
-      associate: function(models) {
-        // associations can be defined here
-        users.hasMany(models.groups);
-        users.hasMany(models.usr_groups);
-        users.hasMany(models.posts);
-        users.hasMany(models.comments);
-        users.hasMany(models.likes);
-      }
-    }
-  });
+  }, {})
+
+  users.associate = function(models) {
+    // associations can be defined here
+    this.hasMany(models.groups);
+    // this.hasMany(models.usrgroups, {as: 'usrgroups', foreignKey: 'authorId'});
+    // this.hasMany(models.posts, {onDelete: 'CASCADE', onUpdate: 'CASCADE', foreignKey: 'author_id', as: 'author_id'});
+    this.hasMany(models.posts, {as: 'userPosts', foreignKey: 'authorId'});
+    this.hasMany(models.comments);
+    this.hasMany(models.likes, {as: 'userLikes', foreignKey: 'authorId'});
+  };
   return users;
 }

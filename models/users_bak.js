@@ -12,6 +12,8 @@ module.exports = function(sequelize, DataTypes) {
         // associations can be defined here
       }
     }
-  });
+  },
+  {underscored: true}
+  );
   return users_bak;
 };

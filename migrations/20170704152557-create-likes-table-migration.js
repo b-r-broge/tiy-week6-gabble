@@ -12,7 +12,7 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         default: false
       },
-      author_id: {
+      authorId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'users',
@@ -22,7 +22,7 @@ module.exports = {
           onUpdate: 'cascade'
         }
       },
-      post_id: {
+      postId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'posts',

@@ -1,5 +1,4 @@
-// Perform user authentication, if not valid, kick user back to pub files and
-// ask for login.
+// Perform user login, and serve public pages
 
 // lots of passport assistance from docs and from
 // https://github.com/lyndachiwetelu/using-passport-with-sequelize-and-mysql
@@ -10,141 +9,74 @@ const express = require('express');
 const router = express.Router();
 
 const passport = require('passport');
-const Strategy = require('passport-local').Strategy;
 
 const models = require('../models');
 const usersDb = models.users;
+const commentsDb = models.comments;
+const groupsDb = models.groups;
+const postsDb = models.posts;
+const likesDb = models.likes;
 
-const bCrypt = require('bcrypt-nodejs')
+const mstchObj = {}
 
-const genHash = function(password) {
-  return bCrypt.hashSync(password, bCrypt.genSaltSync(8), null)
-}
-
-
-router.use(passport.initialize());
-router.use(passport.session());
-
-// authentication stuffs
-
-passport.serializeUser(function(user, next) {
-  next(null, user.id);
-});
-
-passport.deserializeUser(function(id, next) {
-  usersDb.findById(id).then(function (user) {
-    if (user) {
-      next(null, user.get());
-    } else {
-      next(user.errors, null);
-    }
-  });
-});
-
-// Specifically for signing up a new user
-passport.use('local-signup', new Strategy ({
-    usernameField: 'username',
-    passwordField: 'password',
-    passReqToCallback: true
-  },
-  function (req, username, password, next) {
-    console.log('setting up new login strategy');
-    usersDb.findOne({
-      where: {
-        username: username
-    }}).then(function(data) {
-      if (data) {
-        return next(null, false, {message: "Email already used"});
-      } else {
-        var userPass = genHash(password);
-
-        let newUser = usersDb.build({
-          fullname: req.body.fullname,
-          email: req.body.email,
-          username: username,
-          password: userPass,
-          picture: req.body.picture
-        })
-        newUser.save().then(function(newUsr, created) {
-          if (!newUsr) {
-            return next(null, false);
-          }
-          if (newUsr) {
-            return next(null, newUser);
-          }
-        });
-      }
-    })
+// check to see if user is included in session
+router.use(function(req, res, next) {
+  if (req.isAuthenticated()) {
+    console.log('is authenticated');
+    res.locals.login = req.isAuthenticated();
+    // res.locals.user = req.user;
+    next();
+  } else {
+    res.redirect('/gobble/login');
   }
-));
+})
 
-// Passport for signing in an existing user
-passport.use('local-signin', new Strategy ({
-    usernameField: 'username',
-    passwordField: 'password',
-  },
-  function(username, password, next) {
-    let isValid = (usrPass, pass) => {
-      return bCrypt.compareSync(pass, usrPass);
-    }
-    usersDb.findOne({
-      where: {
-        username: username
-      }}).then(function(data) {
-        if (!data) {
-          return next(null, false, {message: 'username does not exist'});
-        }
-        console.log(data);
-
-        if (!isValid(data.password, password)) {
-          return next(null, false, {message: 'password is not correct'});
-        }
-
-        var usrInfo = data.get();
-        return next(null, usrInfo);
-      }).catch(function(err) {
-        console.log('Error:', err);
-        return next(null, false, {message: 'Error on signon'});
-      });
-  }
-));
-
-router.get('/gobble/home/:username', function (req, res) {
+router.get('/gobble/home/:username', function(req, res) {
   // get home page for a user
 
   // need to handle personal page separate from another users
 
 });
 
-router.get('/gobble/signup', function (req, res) {
-  console.log('signup page');
-  res.render('signup')
-});
-
-router.post('/gobble/signup',
-  passport.authenticate('local-signup', {
-    failureRedirect: '/gobble/signup',
-    successRedirect: '/gobble/login'
-  })
-);
-
-router.get('/gobble/login', function (req, res) {
-  // perform login and check
-  console.log('going to login page');
-  res.render('login');
-});
-
-router.get('/gobble/home', function (req, res) {
+router.get('/gobble/home', function(req, res) {
   console.log('home page');
-  console.log(req.session);
-  res.render('home', {user: req.session.user});
-});
+  // console.log(req.session);
+  // console.log(req.user);
+  postsDb.findAll({
+    where: {
+      groupId: 1
+    },
+    include: [{
+      model: models.users,
+      as: 'users'
+    }]
+  }).then(function(pubPosts) {
+    // mstchObj.publicPosts = pubPosts.map((a) => a.dataValues);
+    mstchObj.publicPosts = pubPosts.map(function(post) {
+      // remove some of the confusing bits of squelize data
+      post = post.dataValues;
+      let usersData = post.users.dataValues;
+      // console.log("usersData", usersData);
+      post.users = usersData;
+      // console.log("POST", post);
+      // console.log("USERS", post.users);
 
-router.post('/gobble/login',
-  passport.authenticate('local-signin', {
-    failureRedirect: '/gobble/login',
-    successRedirect: '/gobble/home'
+      // set a flag for if the user owns the post, and allow for a redirect
+      // to edit or delete
+      // console.log("post id", post.users.id);
+      // console.log("session userid", req.user.id);
+      if (post.users.id === req.user.id) {
+        console.log("post authored by logged in user", post.id);
+        post.canEdit = true;
+      } else {
+        post.canEdit = false;
+      }
+      // console.log(post.canEdit);
+      return post;
+    });
+    // console.log(mstchObj);
+    res.render('home', mstchObj);
   })
-);
+});
 
 module.exports = router;

@@ -10,7 +10,7 @@ module.exports = function(Sequelize, DataTypes) {
       type: DataTypes.STRING,
       allowNull: false
     },
-    author_id: {
+    authorId: {
       type: DataTypes.INTEGER,
       references: {
         model: 'users',
@@ -28,15 +28,14 @@ module.exports = function(Sequelize, DataTypes) {
       allowNull: false,
       type: DataTypes.DATE
     }
-  }, {
-    classMethods: {
-      associate: function(models) {
+  }, {})
+
+  groups.associate = function(models) {
         // more associations
-        groups.belongsTo(models.users);
-        groups.hasMany(models.usr_groups);
-        groups.hasMany(models.posts)
+        this.belongsTo(models.users);
+        this.hasMany(models.posts, {as: 'posts', foreignKey: 'groupId'});
+        // this.hasMany(models.usrgroups, {as: 'usrgroups', foreignKey: 'groupId'});
       }
-    }
-  })
+
   return groups
 }

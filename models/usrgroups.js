@@ -1,30 +1,27 @@
 'use strict';
-module.exports = function(sequelize, DataTypes) {
-  var comments = sequelize.define('comments', {
-    content: {
-      type: DataTypes.STRING(140),
-      allowNull: false
-    },
-    posted_at: {
-      type: DataTypes.DATE,
-      default: DataTypes.NOW
+module.exports = function(Sequelize, DataTypes) {
+  var usr_groups = Sequelize.define('usr-groups', {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
     },
     author_id: {
       type: DataTypes.INTEGER,
       references: {
         model: 'users',
         key: 'id',
-        deferrable: sequelize.Deferrable.INITIALLY_IMMEDIATE,
+        deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE,
         onDelete: 'cascade',
         onUpdate: 'cascade'
       }
     },
-    post_id: {
+    group_id: {
       type: DataTypes.INTEGER,
       references: {
-        model: 'posts',
+        model: 'groups',
         key: 'id',
-        deferrable: sequelize.Deferrable.INITIALLY_IMMEDIATE,
+        deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE,
         onDelete: 'cascade',
         onUpdate: 'cascade'
       }
@@ -41,12 +38,12 @@ module.exports = function(sequelize, DataTypes) {
     classMethods: {
       associate: function(models) {
         // more associations
-        comments.belongsTo(models.users);
-        comments.belongsTo(models.posts);
+        usr_groups.belongsTo(models.users);
+        usr_groups.belongsTo(models.groups);
       }
     }
   },
   {underscored: true}
   );
-  return comments
+  return usr_groups
 }
