@@ -28,7 +28,7 @@
       {{#publicPosts}}
         <div class="pub-card">
           <div class="ident">
-            <p>{{users.username}}</p>
+            <p>{{userPosts.username}}</p>
             {{#canEdit}}
               <button type="button" name="button">Edit</button>
                <button type="button" name="button">delete</button>
@@ -38,8 +38,16 @@
             <p>{{content}}</p>
           </div>
           <form class="" action="/gobble/likePost" method="post">
-            <button type="submit" name="doLike" value="{{users.id}}">+1</button>
+            <button type="submit" name="doLike" value="{{id}}">+1</button>
           </form>
+          <p>liked by:</p>
+          <ul>
+            {{#likes}}
+              {{#liked}}
+              <li>{{userLikes.username}}</li>
+              {{/liked}}
+            {{/likes}}
+          </ul>
         </div>
       {{/publicPosts}}
     </article>

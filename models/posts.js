@@ -30,7 +30,7 @@ module.exports = function(sequelize, DataTypes) {
   }, {});
 
 posts.associate = function(models) {
-  this.belongsTo(models.users, {foreignKey: 'authorId', foreignKeyConstraint: true, onDelete: 'cascade', onUpdate: 'cascade', as: 'users'});
+  this.belongsTo(models.users, {foreignKey: 'authorId', foreignKeyConstraint: true, onDelete: 'cascade', onUpdate: 'cascade', as: 'userPosts'});
   this.belongsTo(models.groups, {foreignKey: 'groupId', foreignKeyConstraint: true, onDelete: 'cascade', onUpdate: 'cascade', as: 'groups'});
   this.hasMany(models.comments);
   this.hasMany(models.likes, {as: 'likes', foreignKey: 'postId'});

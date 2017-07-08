@@ -40,22 +40,44 @@ router.post('/gobble/likePost', function(req, res) {
   // false if it has been updated.
   let author = req.user.id,
     post = req.body.doLike;
-  console.log("PASSING", author, post);
-  likesDb.upsert({
-    liked: true ? false : true,
-    authorId: author,
-    postId: post
-  }, {
+  // console.log("PASSING", author, post);
+  likesDb.findOne({
     where: {
       authorId: author,
       postId: post
     }
-  }).then(function(obj) {
-    console.log('liked obj', obj);
-    res.redirect('/gobble/home');
-  }).catch(function(err) {
-    console.log('error', err);
-    res.redirect('/gobble/home');
+  }).then(function(response) {
+    console.log("Searching for an existing like in the db");
+    if (response) {
+      console.log('response found, updating in db');
+      let likeStatus = response.dataValues.liked;
+      console.log('current like status:', likeStatus, 'future like status:', !likeStatus);
+      likesDb.update({
+        liked: !likeStatus,
+      }, {where: {
+        authorId: author,
+        postId: post
+      }}).then(function(obj) {
+        console.log('liked obj', obj);
+        res.redirect('/gobble/home');
+      }).catch(function(err) {
+        console.log('error', err);
+        res.redirect('/gobble/home');
+      })
+    } else {
+      console.log('response not found, inserting into table');
+      likesDb.create({
+        liked: true,
+        authorId: author,
+        postId: post
+      }).then(function(obj) {
+        // console.log('liked obj', obj);
+        res.redirect('/gobble/home');
+      }).catch(function(err) {
+        console.log('error', err);
+        res.redirect('/gobble/home');
+      })
+    }
   })
 });
 

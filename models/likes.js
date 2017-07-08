@@ -21,7 +21,7 @@ module.exports = function(sequelize, DataTypes) {
   }, {});
 
   likes.associate = function(models) {
-    this.belongsTo(models.users, {foreignKey: 'authorId', foreignKeyConstraint: true, onDelete: 'cascade', onUpdate: 'cascade', as: 'users'});
+    this.belongsTo(models.users, {foreignKey: 'authorId', foreignKeyConstraint: true, onDelete: 'cascade', onUpdate: 'cascade', as: 'userLikes'});
     this.belongsTo(models.posts, {foreignKey: 'postId', foreignKeyConstraint: true, onDelete: 'cascade', onUpdate: 'cascade', as: 'posts'});
   }
 

@@ -47,25 +47,29 @@ router.get('/gobble/home', function(req, res) {
       groupId: 1
     },
     include: [{
-      model: models.users,
-      as: 'users'
-    }]
-  }).then(function(pubPosts) {
-    // mstchObj.publicPosts = pubPosts.map((a) => a.dataValues);
+        model: models.users,
+        as: 'userPosts'
+      }, {
+        model: models.likes,
+        as: 'likes',
+        include: {
+          model: models.users,
+          as: 'userLikes'
+        }
+      }],
+    order: [
+      'createdAt'
+    ]}
+  ).then(function(pubPosts) {
     mstchObj.publicPosts = pubPosts.map(function(post) {
-      // remove some of the confusing bits of squelize data
+      // remove some of the unnecessary bits of sequelize data
       post = post.dataValues;
-      let usersData = post.users.dataValues;
-      // console.log("usersData", usersData);
-      post.users = usersData;
-      // console.log("POST", post);
-      // console.log("USERS", post.users);
-
+      let usersData = post.userPosts.dataValues;
+      post.userPosts = usersData;
+      
       // set a flag for if the user owns the post, and allow for a redirect
       // to edit or delete
-      // console.log("post id", post.users.id);
-      // console.log("session userid", req.user.id);
-      if (post.users.id === req.user.id) {
+      if (post.userPosts.id === req.user.id) {
         console.log("post authored by logged in user", post.id);
         post.canEdit = true;
       } else {
