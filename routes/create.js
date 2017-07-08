@@ -71,7 +71,7 @@ router.post('/gobble/likePost', function(req, res) {
         authorId: author,
         postId: post
       }).then(function(obj) {
-        // console.log('liked obj', obj);
+        //  console.log('liked obj', obj);
         res.redirect('/gobble/home');
       }).catch(function(err) {
         console.log('error', err);
@@ -80,5 +80,25 @@ router.post('/gobble/likePost', function(req, res) {
     }
   })
 });
+
+router.post('/gobble/newComment', function(req, res) {
+  // console.log('req.user', req.user.id);
+  var newComment = commentsDb.build({
+    content: req.body.comment,
+    postedAt: new Date(),
+    authorId: req.user.id,
+    postId: req.body.postid
+  });
+  console.log(newComment);
+  newComment.save().then(function(comment) {
+    console.log('new comment written to db');
+    res.redirect('/gobble/home');
+  }).catch(function(err) {
+    console.log('error writing new post', err);
+    req.session.err = "There was an error writing your post"
+    res.redirect('/gobble/home')
+  })
+});
+
 
 module.exports = router;

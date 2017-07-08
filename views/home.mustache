@@ -37,6 +37,12 @@
           <div class="content">
             <p>{{content}}</p>
           </div>
+          <div class="comments">
+            {{#comments}}
+              <p>{{userComments.username}}</p>
+              <p>{{content}}</p>
+            {{/comments}}
+          </div>
           <form class="" action="/gobble/likePost" method="post">
             <button type="submit" name="doLike" value="{{id}}">+1</button>
           </form>
@@ -48,6 +54,12 @@
               {{/liked}}
             {{/likes}}
           </ul>
+        </div>
+        <div class="comments">
+          <form class="" action="/gobble/newComment" method="post">
+            <textarea name="comment" value="" rows="2" cols="60" maxlength="140"></textarea>
+            <button type="submit" name="postid" value={{id}}>Add Comments</button>
+          </form>
         </div>
       {{/publicPosts}}
     </article>

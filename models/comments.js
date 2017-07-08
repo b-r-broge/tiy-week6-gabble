@@ -5,29 +5,9 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(140),
       allowNull: false
     },
-    posted_at: {
+    postedAt: {
       type: DataTypes.DATE,
       default: DataTypes.NOW
-    },
-    author_id: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'users',
-        key: 'id',
-        deferrable: sequelize.Deferrable.INITIALLY_IMMEDIATE,
-        onDelete: 'cascade',
-        onUpdate: 'cascade'
-      }
-    },
-    post_id: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'posts',
-        key: 'id',
-        deferrable: sequelize.Deferrable.INITIALLY_IMMEDIATE,
-        onDelete: 'cascade',
-        onUpdate: 'cascade'
-      }
     },
     createdAt: {
       allowNull: false,
@@ -37,16 +17,12 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       type: DataTypes.DATE
     }
-  }, {
-    classMethods: {
-      associate: function(models) {
-        // more associations
-        comments.belongsTo(models.users);
-        comments.belongsTo(models.posts);
-      }
-    }
-  },
-  {underscored: true}
-  );
+  }, {});
+
+  comments.associate = function(models) {
+    this.belongsTo(models.users, {foreignKey: 'authorId', foreignKeyConstraint: true, onDelete: 'cascade', onUpdate: 'cascade', as: 'userComments'});
+    this.belongsTo(models.posts, {foreignKey: 'postId', foreignKeyConstraint: true, onDelete: 'cascade', onUpdate: 'cascade', as: 'posts'});
+  }
+
   return comments
 }

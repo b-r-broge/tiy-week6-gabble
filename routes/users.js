@@ -56,6 +56,16 @@ router.get('/gobble/home', function(req, res) {
           model: models.users,
           as: 'userLikes'
         }
+      }, {
+        model: models.comments,
+        as: 'comments',
+        include: {
+          model: models.users,
+          as: 'userComments'
+        },
+        order: [
+          'createdAt'
+        ]
       }],
     order: [
       'createdAt'
@@ -66,7 +76,10 @@ router.get('/gobble/home', function(req, res) {
       post = post.dataValues;
       let usersData = post.userPosts.dataValues;
       post.userPosts = usersData;
-      
+
+      // console.log('POST', post);
+      // console.log('COMMENTS', post.comments);
+
       // set a flag for if the user owns the post, and allow for a redirect
       // to edit or delete
       if (post.userPosts.id === req.user.id) {

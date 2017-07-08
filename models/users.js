@@ -44,9 +44,8 @@ module.exports = function(Sequelize, DataTypes) {
     // associations can be defined here
     this.hasMany(models.groups);
     // this.hasMany(models.usrgroups, {as: 'usrgroups', foreignKey: 'authorId'});
-    // this.hasMany(models.posts, {onDelete: 'CASCADE', onUpdate: 'CASCADE', foreignKey: 'author_id', as: 'author_id'});
     this.hasMany(models.posts, {as: 'userPosts', foreignKey: 'authorId'});
-    this.hasMany(models.comments);
+    this.hasMany(models.comments, {as: 'userComments', foreignKey: 'authorId'});
     this.hasMany(models.likes, {as: 'userLikes', foreignKey: 'authorId'});
   };
   return users;

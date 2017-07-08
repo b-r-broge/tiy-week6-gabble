@@ -28,7 +28,7 @@ router.use(passport.session());
 passport.serializeUser(function(user, next) {
   next(null, user.id);
 });
-
+ 
 passport.deserializeUser(function(id, next) {
   usersDb.findById(id).then(function (user) {
     if (user) {
