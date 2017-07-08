@@ -64,7 +64,7 @@ router.get('/gobble/home', function(req, res) {
           as: 'userComments'
         },
         order: [
-          'createdAt'
+          'id'
         ]
       }],
     order: [
