@@ -28,7 +28,7 @@ router.use(passport.session());
 passport.serializeUser(function(user, next) {
   next(null, user.id);
 });
- 
+
 passport.deserializeUser(function(id, next) {
   usersDb.findById(id).then(function (user) {
     if (user) {
@@ -107,32 +107,48 @@ passport.use('local-signin', new Strategy ({
   }
 ));
 
-router.get('/gobble/welcome', function (req, res) {
-  // get home page for an unsigned user
-  res.render('welcome', {})
+var errMsg = ""
+router.use('/gobble/signup', function (req, res, next) {
+  console.log('verifying signup information');
+  if (req.body.password == req.body.password2) {
+    next();
+  } else {
+    errMsg = "Your passwords must match"
+    res.redirect('/gobble/welcome')
+  }
 });
 
-router.get('/gobble/signup', function (req, res) {
-  console.log('signup page');
-  res.render('signup')
+router.get('/', function (req, res) {
+  res.redirect('/gobble/welcome')
+})
+
+router.get('/gobble', function (req, res) {
+  // send to welcome page
+  res.redirect('/gobble/welcome')
+})
+
+router.get('/gobble/welcome', function (req, res) {
+  // get home page for an unsigned user
+  res.render('welcome', {error: errMsg})
 });
 
 router.post('/gobble/signup',
   passport.authenticate('local-signup', {
-    failureRedirect: '/gobble/signup',
-    successRedirect: '/gobble/login'
-  })
+    failureRedirect: '/gobble/welcome',
+    successRedirect: '/gobble/home'
+    }
+  )
 );
 
-router.get('/gobble/login', function (req, res) {
-  // perform login and check
-  console.log('going to login page');
-  res.render('login');
-});
+// router.get('/gobble/login', function (req, res) {
+//   // perform login and check
+//   console.log('going to login page');
+//   res.render('login');
+// });
 
 router.post('/gobble/login',
   passport.authenticate('local-signin', {
-    failureRedirect: '/gobble/login',
+    failureRedirect: '/gobble/welcome',
     successRedirect: '/gobble/home'
   })
 );

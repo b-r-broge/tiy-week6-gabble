@@ -1,0 +1,14 @@
+body {
+  background: #E88D43;
+}
+
+.welcome-page {
+  background: url('../resources/gobble-gobble.png') top/cover no-repeat;
+  background-color: #E88D43;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: row;
+  
+}

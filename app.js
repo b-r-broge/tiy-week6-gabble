@@ -22,7 +22,7 @@ app.use(bodyParser.json());
 app.engine('mustache', mustache());
 app.set('view engine', 'mustache')
 app.set('views', './views')
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(__dirname));
 
 app.use(session({
   secret: 'this is very secret',

@@ -3,11 +3,40 @@
   <head>
     <meta charset="utf-8">
     <title>Gobble Gobble</title>
+    <link rel="stylesheet" href="../public/css/normalize.css">
+    <link rel="stylesheet" href="../public/css/main.css">
   </head>
-  <body>
+  <body class="welcome-page">
     <h1>Welcome to Gobble</h1>
-    <a href="/gobble/login">Log In Here!</a>
-    <a href="/gobble/signup">Sign Up Here!</a>
-    <a href="/gobble/logout">Log Out</a>
+
+    <p>Gobble is a new and exciting twitter clone where you can feel free to
+    let your inner turkey loose to relax and have fun</p>
+
+    <div class="main-content">
+
+      <div class="login">
+        <h3>Log In</h3>
+        <form class="" action="/gobble/login" method="post">
+          <input type="text" name="username" value="" placeholder="username" autofocus="true">
+          <input type="password" name="password" value="" placeholder="password">
+          <button type="submit" value="Log In">Log In</button>
+        </form>
+      </div>
+
+      <div class="signup">
+        <h3>Or Sign up Here</h3>
+          <form class="" action="/gobble/signup" method="post">
+            {{error}}
+            <input type="text" name="fullname" value="" placeholder="Put your full name here..." required="true">
+            <input type="text" name="email" value="" placeholder="email" required="true">
+            <input type="text" name="pic" value="" placeholder="profile picture url">
+            <input type="text" name="username" value="" placeholder="Username/displayname" required="true">
+            <input type="password" name="password" value="" placeholder="password" required="true">
+            <input type="password" name="password2" value="" placeholder="password confirmation" required="true">
+            <button type="submit" name="submit">Sign Up</button>
+          </form>
+      </div>
+    </div>
+
   </body>
 </html>

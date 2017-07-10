@@ -24,10 +24,9 @@ router.use(function(req, res, next) {
   if (req.isAuthenticated()) {
     console.log('is authenticated');
     res.locals.login = req.isAuthenticated();
-    // res.locals.user = req.user;
     next();
   } else {
-    res.redirect('/gobble/login');
+    res.redirect('/gobble/welcome');
   }
 })
 
