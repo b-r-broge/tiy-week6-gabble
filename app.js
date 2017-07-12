@@ -37,6 +37,7 @@ app.use(createRoutes);
 // app.use(updateRoutes);
 // app.use(deleteRoutes);
 
-app.listen(3000, function() {
+app.set('port', (process.env.PORT || 3000));
+app.listen(app.get('port'), function() {
   console.log('visit http://localhost:3000/gobble');
 })

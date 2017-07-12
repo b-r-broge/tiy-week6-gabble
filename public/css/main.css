@@ -10,5 +10,15 @@ body {
 .main-content {
   display: flex;
   flex-direction: row;
-  
+  justify-content: space-around;
+}
+
+.login form {
+  display: flex;
+  flex-direction: column;
+}
+
+.signup form {
+  display: flex;
+  flex-direction: column;
 }

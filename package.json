@@ -4,7 +4,8 @@
   "description": "simple social network",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
@@ -16,6 +17,9 @@
     "url": "https://github.com/b-r-broge/tiy-week6-gabble/issues"
   },
   "homepage": "https://github.com/b-r-broge/tiy-week6-gabble#readme",
+  "engine": {
+    "node": "v4.2.6"
+  },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.17.2",
